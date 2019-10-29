@@ -4,10 +4,6 @@ Dockerized Yearning (https://yearning.io).
 
 [![DockerHub Badge](http://dockeri.co/image/zhangsean/yearning)](https://hub.docker.com/r/zhangsean/yearning/)
 
-## Tags
-
-* `v2.1.4`, `latest`
-
 ## Usage
 
 ```sh
@@ -21,3 +17,5 @@ docker run -itd \
   -e MYSQL_DB=yearning \
   zhangsean/yearning
 ```
+
+Goto [Yearning Guide](https://guide.yearning.io) for more.
