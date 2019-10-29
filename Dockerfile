@@ -11,7 +11,7 @@ RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 EXPOSE 8000
 
-ARG YEARNING_VER="2.1.4"
+ARG YEARNING_VER="2.1.5"
 ARG YEARNING_URL="https://github.com/cookieY/Yearning/releases/download/v${YEARNING_VER}/Yearning-${YEARNING_VER}.linux-amd64.zip"
 RUN wget -cqO yearning.zip $YEARNING_URL; \
     unzip yearning.zip -d /; \
