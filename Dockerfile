@@ -1,9 +1,9 @@
-FROM alpine:latest
+FROM alpine:3.12
 
 LABEL maintainer="HenryYee-2019/08/13"
 
 RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2; \
-    echo "http://mirrors.ustc.edu.cn/alpine/v3.3/main/" > /etc/apk/repositories; \
+    echo "http://mirrors.ustc.edu.cn/alpine/v3.12/main/" > /etc/apk/repositories; \
     apk add --no-cache tzdata; \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; \
     echo "Asia/Shanghai" >> /etc/timezone; \
@@ -11,12 +11,11 @@ RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 EXPOSE 8000
 
-ARG YEARNING_VER="2.1.5"
+ARG YEARNING_VER="v2.1.5"
 ARG YEARNING_URL="https://github.com/cookieY/Yearning/releases/download/v${YEARNING_VER}/Yearning-${YEARNING_VER}.linux-amd64.zip"
 RUN wget -cqO yearning.zip $YEARNING_URL; \
     unzip yearning.zip -d /; \
-    rm -f yearning.zip; \
-    rm -f /Yearning-go/dist.zip
+    rm -f yearning.zip
 
 WORKDIR /Yearning-go/
 

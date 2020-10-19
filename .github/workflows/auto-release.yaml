@@ -1,0 +1,83 @@
+#=================================================
+# https://github.com/zhangsean/docker-yearning
+# Description: Auto check latest yearning release and tag zhangsean/yearning using GitHub Actions
+# License: Apache V2.0
+# Author: ZhangSean
+#=================================================
+
+name: Follow up yearning release
+
+on:
+  schedule:
+    - cron: 0 23 * * *
+  watch:
+    types: [started]
+    if: github.event.repository.owner.id == github.event.sender.id
+  push:
+    paths:
+      - '.github/workflows/*.yml'
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Check yearning release
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt install -y jq
+          git fetch --tags
+          export CURRENT=$(git tag --sort=creatordate | tail -n 1)
+          echo "CURRENT=$CURRENT"
+          export YEARNING_LATEST=https://api.github.com/repos/cookieY/Yearning/releases/latest
+          export LATEST=`curl -s $YEARNING_LATEST | jq -r .tag_name`
+          echo "LATEST=$LATEST"
+          if [ "$LATEST" != "$CURRENT" ]; then
+            echo "New zentao release: $LATEST"
+            export LATEST_ASSET=`curl -s $YEARNING_LATEST | jq -r .assets[0].browser_download_url`
+            if [ -e "$LATEST_ASSET" ]; then
+              echo "No asset in release: $LATEST"
+            else
+              echo "CURRENT=$CURRENT" >> $GITHUB_ENV
+              echo "LATEST=$LATEST" >> $GITHUB_ENV
+              echo "LATEST_ASSET=$LATEST_ASSET" >> $GITHUB_ENV
+            fi
+          else
+            echo "No new yearning release"
+          fi
+
+      - name: Bump to new yearning version
+        if: success() && env.CURRENT != '' && env.LATEST != ''
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Bump yearning version from $CURRENT to $LATEST"
+          sed -i "/YEARNING_VER/s/$CURRENT/$LATEST/g" Dockerfile
+          sed -i "/ARG YEARNING_URL/d" Dockerfile
+          sed -i "/YEARNING_VER/a ARG YEARNING_URL=$LATEST_ASSET" Dockerfile
+          # commit and push
+          git config user.email zxf2342@qq.com
+          git config user.name zhangsean
+          git commit -a -m "Bump to zentao $LATEST"
+          git push
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        if: success() && env.LATEST != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.LATEST }}
+          release_name: ${{ env.LATEST }}
+          body: |
+            Bump to yearning ${{ env.LATEST }}
+          draft: false
+          prerelease: false
