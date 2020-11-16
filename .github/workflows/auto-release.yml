@@ -36,12 +36,12 @@ jobs:
           git fetch --tags
           export CURRENT=$(git tag --sort=creatordate | tail -n 1)
           echo "CURRENT=$CURRENT"
-          export YEARNING_LATEST=https://api.github.com/repos/cookieY/Yearning/releases/latest
-          export LATEST=`curl -s $YEARNING_LATEST | jq -r .tag_name`
+          export YEARNING_LATEST=https://api.github.com/repos/cookieY/Yearning/releases
+          export LATEST=`curl -s $YEARNING_LATEST | jq -r .[0].tag_name`
           echo "LATEST=$LATEST"
           if [ "$LATEST" != "$CURRENT" ]; then
             echo "New yearning release: $LATEST"
-            export LATEST_ASSET=`curl -s $YEARNING_LATEST | jq -r .assets[0].browser_download_url`
+            export LATEST_ASSET=`curl -s $YEARNING_LATEST | jq -r .[0].assets[0].browser_download_url`
             if [ -e "$LATEST_ASSET" ]; then
               echo "No asset in release: $LATEST"
             else
