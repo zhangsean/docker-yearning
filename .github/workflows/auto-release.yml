@@ -68,14 +68,17 @@ jobs:
           git config user.name zhangsean
           git commit -a -m "Bump to yearning $LATEST"
           git push
+          git tag $LATEST
+          git push --tags
+          echo "TAG=$LATEST" >> $GITHUB_ENV
 
       - name: Create Release
         uses: actions/create-release@v1
-        if: success() && env.LATEST != ''
+        if: success() && env.TAG != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.LATEST }}
+          tag_name: ${{ env.TAG }}
           release_name: ${{ env.LATEST }}
           body: |
             Bump to yearning ${{ env.LATEST }}
