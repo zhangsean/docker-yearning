@@ -104,5 +104,5 @@ jobs:
           context: .
           push: true
           tags: |
-            zhangsean/kubectl:latest,
-            zhangsean/kubectl:${{ env.LATEST }}
+            zhangsean/yearning:latest,
+            zhangsean/yearning:${{ env.LATEST }}
