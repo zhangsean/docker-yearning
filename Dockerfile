@@ -1,6 +1,6 @@
-FROM alpine:3.12
+FROM alpine
 
-LABEL maintainer="HenryYee-2019/08/13"
+LABEL maintainer="zhangsean <zxf2342@qq.com>"
 
 RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2; \
     echo "http://mirrors.ustc.edu.cn/alpine/v3.12/main/" > /etc/apk/repositories; \
@@ -11,8 +11,8 @@ RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 
 EXPOSE 8000
 
-ARG YEARNING_VER="2.3.5"
-ARG YEARNING_URL=https://github.com/cookieY/Yearning/releases/download/2.3.5/Yearning-2.3.5-linux-amd64.zip
+ARG YEARNING_VER="2.3.4"
+ARG YEARNING_URL=https://github.com/cookieY/Yearning/releases/download/2.3.4/Yearning-2.3.4-linux-amd64.zip
 RUN wget -cqO yearning.zip $YEARNING_URL; \
     unzip yearning.zip -d /; \
     rm -f yearning.zip
