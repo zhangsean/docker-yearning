@@ -21,4 +21,4 @@ WORKDIR /Yearning-go/
 
 ENTRYPOINT  ["./Yearning"]
 
-CMD ["-m", "-s"]
+CMD ["run"]
